@@ -17,6 +17,10 @@ type Unary struct {
 	operator Token
 }
 
+type Absolute struct {
+	expr ASTNode
+}
+
 type Grouping struct {
 	expr ASTNode
 }
@@ -123,9 +127,25 @@ func parseAddition(parser *Parser) ASTNode {
 
 func parseMultiplication(parser *Parser) ASTNode {
 
+	left := parsePower(parser)
+
+	for match(parser, Slash, Star) {
+		operator := Previous_parser(parser)
+		right := parsePower(parser)
+		left = &Binary{
+			left:     left,
+			right:    right,
+			operator: operator,
+		}
+	}
+
+	return left
+}
+
+func parsePower(parser *Parser) ASTNode {
 	left := parseUnary(parser)
 
-	for match(parser, Slash, Star, StarStar) {
+	for match(parser, StarStar) {
 		operator := Previous_parser(parser)
 		right := parseUnary(parser)
 		left = &Binary{
@@ -148,7 +168,22 @@ func parseUnary(parser *Parser) ASTNode {
 		}
 	}
 
-	return parseGrouping(parser)
+	return parseAbsolute(parser)
+}
+
+func parseAbsolute(parser *Parser) ASTNode {
+	var expr ASTNode
+
+	if match(parser, Pipe) {
+		expr = &Absolute{
+			expr: parseExpression(parser),
+		}
+		Consume(parser, Pipe)
+	} else {
+		expr = parseGrouping(parser)
+	}
+
+	return expr
 }
 
 func parseGrouping(parser *Parser) ASTNode {

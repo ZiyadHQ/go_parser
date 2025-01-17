@@ -18,6 +18,8 @@ func (n *Binary) Evaluate() float64 {
 		return n.left.Evaluate() * n.right.Evaluate()
 	case "**":
 		return math.Pow(n.left.Evaluate(), n.right.Evaluate())
+	case "%":
+		return math.Mod(n.left.Evaluate(), n.right.Evaluate())
 	default:
 		log.Fatalf("Error evaluating binary expr: %")
 	}
@@ -32,6 +34,10 @@ func (n *Unary) Evaluate() float64 {
 		log.Fatalf("Error evaluating unary expr: %")
 	}
 	return -999
+}
+
+func (n *Absolute) Evaluate() float64 {
+	return math.Abs(n.expr.Evaluate())
 }
 
 func (n *Grouping) Evaluate() float64 {

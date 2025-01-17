@@ -16,6 +16,7 @@ const (
 	LeftParen
 	RightParen
 	LiteralString
+	Pipe
 )
 
 var TokenType_str = map[TokenType]string{
@@ -27,6 +28,7 @@ var TokenType_str = map[TokenType]string{
 	LeftParen:     "LeftParen",
 	RightParen:    "RightParen",
 	LiteralString: "LiteralString",
+	Pipe:          "Pipe",
 }
 
 type Token struct {
@@ -50,7 +52,7 @@ func isWhiteSpace(lexer *Lexer) bool {
 		return true
 	}
 	char := lexer.program[lexer.currentIndex]
-	return (char == ' ' || char == '\n' || char == '\t' || char == '\r' || char == '\v' || char == '\f' || char == '+' || char == '-' || char == '/' || char == '*' || char == '(' || char == ')')
+	return (char == ' ' || char == '\n' || char == '\t' || char == '\r' || char == '\v' || char == '\f' || char == '+' || char == '-' || char == '/' || char == '*' || char == '(' || char == ')' || char == '|')
 }
 
 func Next(lexer *Lexer) byte {
@@ -95,6 +97,8 @@ func Scan(lexer *Lexer) {
 			addToken(lexer, Token{content: string(currentChar), tokenType: LeftParen})
 		case ')':
 			addToken(lexer, Token{content: string(currentChar), tokenType: RightParen})
+		case '|':
+			addToken(lexer, Token{content: string(currentChar), tokenType: Pipe})
 		case '*':
 			if Peek(lexer) == '*' {
 				addToken(lexer, Token{content: string(currentChar) + string(Next(lexer)), tokenType: StarStar})
