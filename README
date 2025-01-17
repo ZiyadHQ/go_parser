@@ -1,0 +1,3 @@
+a simple recursive descent parser.
+it's used with an example calculator program that calculates the result of a string representing an arithmetic equation.
+lacks proper error detection, make sure to write correct equations.

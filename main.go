@@ -2,21 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
 )
 
 func main() {
-	fmt.Println("Hello world!")
 
 	lexer := Lexer{
-		program:      "3 ** (2 * (3 / (4 + (5 - (6)))))",
+		program:      os.Args[1],
 		currentIndex: 0,
 	}
-
-	str := "Ahmad"
-	str += " Khaled"
-	str += " Saleh"
-
-	fmt.Println(str)
 
 	Scan(&lexer)
 	printLexer(&lexer)
@@ -24,8 +18,6 @@ func main() {
 	parser := CreateParser(&lexer)
 
 	node := parseExpression(parser)
-
-	fmt.Printf("%+v\n", node)
 
 	fmt.Printf("Result: %+v\n", node.Evaluate())
 
