@@ -44,6 +44,25 @@ func (n *Grouping) Evaluate() float64 {
 	return n.expr.Evaluate()
 }
 
+func (n *FunctionNode) Evaluate() float64 {
+	switch n.function.content {
+	case "Floor":
+		return math.Floor(n.expr.Evaluate())
+	case "Ceil":
+		return math.Ceil(n.expr.Evaluate())
+	case "Sin":
+		return math.Sin(n.expr.Evaluate())
+	case "Cos":
+		return math.Cos(n.expr.Evaluate())
+	case "Tan":
+		return math.Tan(n.expr.Evaluate())
+	case "Sqrt":
+		return math.Sqrt(n.expr.Evaluate())
+	}
+	log.Fatalf("Error, unrecognized function: %q", n.function.content)
+	return -0
+}
+
 func (n *Literal) Evaluate() float64 {
 
 	value, err := strconv.ParseFloat(n.value.content, 64)

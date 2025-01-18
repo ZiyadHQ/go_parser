@@ -17,6 +17,7 @@ const (
 	RightParen
 	LiteralString
 	Pipe
+	Function
 )
 
 var TokenType_str = map[TokenType]string{
@@ -29,6 +30,16 @@ var TokenType_str = map[TokenType]string{
 	RightParen:    "RightParen",
 	LiteralString: "LiteralString",
 	Pipe:          "Pipe",
+	Function:      "Function",
+}
+
+var Functions = map[string]TokenType{
+	"Floor": Function,
+	"Ceil":  Function,
+	"Sin":   Function,
+	"Cos":   Function,
+	"Tan":   Function,
+	"Sqrt":  Function,
 }
 
 type Token struct {
@@ -112,7 +123,12 @@ func Scan(lexer *Lexer) {
 			for !isWhiteSpace(lexer) {
 				literal += string(Next(lexer))
 			}
-			addToken(lexer, Token{content: literal, tokenType: LiteralString})
+			tokenType, ok := Functions[literal]
+			if ok {
+				addToken(lexer, Token{content: literal, tokenType: tokenType})
+			} else {
+				addToken(lexer, Token{content: literal, tokenType: LiteralString})
+			}
 		}
 	}
 }

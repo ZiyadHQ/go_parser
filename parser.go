@@ -25,6 +25,11 @@ type Grouping struct {
 	expr ASTNode
 }
 
+type FunctionNode struct {
+	function Token
+	expr     ASTNode
+}
+
 type Literal struct {
 	value Token
 }
@@ -192,6 +197,24 @@ func parseGrouping(parser *Parser) ASTNode {
 	if match(parser, LeftParen) {
 		expr = &Grouping{
 			expr: parseExpression(parser),
+		}
+		Consume(parser, RightParen)
+	} else {
+		expr = parseFunction(parser)
+	}
+
+	return expr
+}
+
+func parseFunction(parser *Parser) ASTNode {
+	var expr ASTNode
+
+	if match(parser, Function) {
+		functionToken := Previous_parser(parser)
+		Consume(parser, LeftParen)
+		expr = &FunctionNode{
+			function: functionToken,
+			expr:     parseExpression(parser),
 		}
 		Consume(parser, RightParen)
 	} else {
